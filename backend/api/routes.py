@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 
 from api.validation import validate_backtest_payload
+from services.backtester import run_sma_backtest
 
 
 api_bp = Blueprint("api", __name__)
@@ -19,4 +20,22 @@ def backtest():
     if errors:
         return jsonify({"ok": False, "errors": errors}), 400
 
-    return jsonify({"ok": True, "message": "Backtest endpoint scaffolded"})
+    try:
+        result = run_sma_backtest(payload)
+    except ValueError as exc:
+        return jsonify({"ok": False, "error": str(exc)}), 400
+    except Exception:
+        return jsonify({"ok": False, "error": "Internal server error"}), 500
+
+    return jsonify(
+        {
+            "ok": True,
+            "ticker": payload["ticker"].strip().upper(),
+            "period": payload["period"],
+            "short_sma": int(payload["short_sma"]),
+            "long_sma": int(payload["long_sma"]),
+            "initial_capital": float(payload["initial_capital"]),
+            "stats": result["stats"],
+            "chart_data": result["chart_data"],
+        }
+    )
