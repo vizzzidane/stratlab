@@ -81,7 +81,7 @@ export function ParamsForm({ values, disabled = false, onChange }: ParamsFormPro
           className={inputClassName}
           disabled={disabled}
           min={1}
-          step={100}
+          step={1}
           type="number"
           value={values.initialCapital}
           onChange={(event) =>
