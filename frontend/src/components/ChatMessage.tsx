@@ -1,5 +1,6 @@
 import type { TranscriptMessage } from "../lib/types";
 import { ChartTable } from "./ChartTable";
+import { EquityCurveChart } from "./EquityCurveChart";
 import { MetricsCard } from "./MetricsCard";
 
 interface ChatMessageProps {
@@ -55,6 +56,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
         {message.result ? (
           <div className="mt-3 grid gap-3">
             <MetricsCard stats={message.result.stats} />
+            <EquityCurveChart data={message.result.chart_data} />
             <ChartTable data={message.result.chart_data} />
           </div>
         ) : null}
