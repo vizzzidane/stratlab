@@ -11,4 +11,47 @@
 
 body {
   margin: 0;
+  background: #000000;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: rgba(34, 211, 238, 0.24);
+  color: #f5f5f5;
+}
+
+input,
+textarea,
+button {
+  font: inherit;
+}
+
+button {
+  border-radius: 0;
+}
+
+input,
+textarea,
+select {
+  border-radius: 0;
+}
+
+::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #52525b;
 }
