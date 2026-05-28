@@ -18,12 +18,8 @@ export interface Stats {
 
 export interface ChartDataPoint {
   date: string;
-  close: number;
-  short_sma: number | null;
-  long_sma: number | null;
-  signal: number | string | null;
-  equity: number;
-  returns?: number | null;
+  strategy: number;
+  buy_hold: number;
 }
 
 export interface BacktestResponse {

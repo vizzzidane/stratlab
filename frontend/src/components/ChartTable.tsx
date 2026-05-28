@@ -28,40 +28,24 @@ export function ChartTable({ data }: ChartTableProps) {
             <tr className="border-b border-zinc-800/80">
               <th className="whitespace-nowrap px-2.5 py-1.5 font-medium">Date</th>
               <th className="whitespace-nowrap px-2.5 py-1.5 text-right font-medium">
-                Close
+                Strategy
               </th>
               <th className="whitespace-nowrap px-2.5 py-1.5 text-right font-medium">
-                Short SMA
-              </th>
-              <th className="whitespace-nowrap px-2.5 py-1.5 text-right font-medium">
-                Long SMA
-              </th>
-              <th className="whitespace-nowrap px-2.5 py-1.5 text-right font-medium">
-                Signal
-              </th>
-              <th className="whitespace-nowrap px-2.5 py-1.5 text-right font-medium">
-                Equity
+                Buy &amp; Hold
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-900 bg-black text-zinc-300">
           {latestRows.map((row) => (
-            <tr key={`${row.date}-${row.equity}`} className="hover:bg-zinc-950">
+            <tr key={`${row.date}-${row.strategy}-${row.buy_hold}`} className="hover:bg-zinc-950">
               <td className="whitespace-nowrap px-2.5 py-1.5 text-zinc-400">
                 {row.date}
               </td>
-              <td className="px-2.5 py-1.5 text-right">{formatCell(row.close)}</td>
               <td className="px-2.5 py-1.5 text-right">
-                {formatCell(row.short_sma)}
+                {formatCell(row.strategy)}
               </td>
               <td className="px-2.5 py-1.5 text-right">
-                {formatCell(row.long_sma)}
-              </td>
-              <td className="px-2.5 py-1.5 text-right text-cyan-300">
-                {formatCell(row.signal)}
-              </td>
-              <td className="px-2.5 py-1.5 text-right">
-                {formatCell(row.equity)}
+                {formatCell(row.buy_hold)}
               </td>
             </tr>
           ))}
