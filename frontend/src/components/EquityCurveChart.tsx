@@ -47,7 +47,7 @@ export function EquityCurveChart({ data }: EquityCurveChartProps) {
         </div>
       </div>
 
-      <div className="h-64 px-2 py-3">
+      <div className="h-56 px-2 py-2">
         <ResponsiveContainer height="100%" width="100%">
           <LineChart
             data={data}

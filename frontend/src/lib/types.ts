@@ -9,10 +9,18 @@ export interface BacktestRequest {
 
 export interface Stats {
   annualized_return: number;
+  annualized_buy_hold_return?: number;
+  buy_hold_max_drawdown?: number;
+  buy_hold_returns?: number;
+  buy_hold_sharpe?: number;
+  buy_hold_volatility?: number;
   sharpe_ratio: number;
   max_drawdown: number;
+  strategy_volatility?: number;
+  total_days?: number;
   total_returns: number;
   total_trades: number;
+  total_years?: number;
   win_rate: number;
 }
 
@@ -41,5 +49,6 @@ export interface TranscriptMessage {
   id: string;
   role: ChatMessageRole;
   content: string;
+  createdAt: string;
   result?: BacktestResponse;
 }
