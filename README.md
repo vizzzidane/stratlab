@@ -29,4 +29,21 @@ Copy-Item .env.sample .env
 npm run dev
 ```
 
+## Local Development
+
+Frontend:
+
+```powershell
+npm run dev
+```
+
+Backend:
+
+```powershell
+python app.py
+```
+
+The frontend uses `VITE_API_BASE_URL` for API requests. The backend default local
+URL is `http://127.0.0.1:5000`.
+
 Business logic, API routes, database integration, and authentication are intentionally not implemented yet.

@@ -1,6 +1,9 @@
 import type { BacktestRequest, BacktestResponse } from "./types";
 
-const BACKTEST_URL = "http://localhost:5000/api/backtest";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "") ??
+  "http://127.0.0.1:5000";
+const BACKTEST_URL = `${API_BASE_URL}/api/backtest`;
 
 interface BackendErrorBody {
   error?: string;
