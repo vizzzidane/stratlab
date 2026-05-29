@@ -8,6 +8,7 @@ Thumbs.db
 .env
 .env.*
 !.env.sample
+!.env.example
 
 # Python
 __pycache__/
