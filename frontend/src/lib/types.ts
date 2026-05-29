@@ -50,5 +50,13 @@ export interface TranscriptMessage {
   role: ChatMessageRole;
   content: string;
   createdAt: string;
+  requestSummary?: string;
+  runNumber?: number;
+  runParams?: {
+    ticker: string;
+    shortSma: number;
+    longSma: number;
+    period: string;
+  };
   result?: BacktestResponse;
 }

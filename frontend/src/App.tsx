@@ -4,30 +4,11 @@ import { defaultParams } from "./components/ParamsForm";
 import { runBacktest } from "./lib/api";
 import type {
   BacktestRequest,
-  BacktestResponse,
   ParamsFormValues,
   TranscriptMessage,
 } from "./lib/types";
 
 const defaultStrategy = "Run a simple SMA crossover backtest.";
-
-function createMessage(
-  role: TranscriptMessage["role"],
-  content: string,
-  result?: BacktestResponse,
-): TranscriptMessage {
-  return {
-    createdAt: new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    }),
-    id: crypto.randomUUID(),
-    role,
-    content,
-    result,
-  };
-}
 
 function buildPayload(
   strategy: string,
@@ -86,37 +67,70 @@ function App() {
     }
 
     const payload = buildPayload(strategy, params);
+    const runNumber = messages.length + 1;
+    const runId = crypto.randomUUID();
+    const submittedAt = new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    const requestSummary = formatRequestSummary(payload);
+
     setIsLoading(true);
     setMessages((currentMessages) => [
+      {
+        content: "Backtest request submitted.",
+        createdAt: submittedAt,
+        id: runId,
+        requestSummary,
+        role: "user",
+        runNumber,
+        runParams: {
+          ticker: payload.ticker,
+          shortSma: payload.short_sma,
+          longSma: payload.long_sma,
+          period: payload.period,
+        },
+      },
       ...currentMessages,
-      createMessage("user", formatRequestSummary(payload)),
     ]);
 
     try {
       const result = await runBacktest(payload);
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        createMessage(
-          "model",
-          `Backtest complete for ${payload.ticker}. Latest ${Math.min(
-            result.chart_data.length,
-            10,
-          )} chart rows are shown below.`,
-          result,
+      setMessages((currentMessages) =>
+        currentMessages.map((message) =>
+          message.id === runId
+            ? {
+                ...message,
+                content: `Backtest complete. Latest ${Math.min(
+                  result.chart_data.length,
+                  10,
+                )} chart rows are shown below.`,
+                result,
+                role: "model",
+              }
+            : message,
         ),
-      ]);
+      );
     } catch (error) {
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        createMessage("error", getErrorMessage(error)),
-      ]);
+      setMessages((currentMessages) =>
+        currentMessages.map((message) =>
+          message.id === runId
+            ? {
+                ...message,
+                content: getErrorMessage(error),
+                role: "error",
+              }
+            : message,
+        ),
+      );
     } finally {
       setIsLoading(false);
     }
   }
 
   return (
-    <main className="flex min-h-screen flex-col bg-black text-zinc-100">
+    <main className="flex h-screen flex-col overflow-hidden bg-black text-zinc-100">
       <header className="border-b border-zinc-800/80 bg-zinc-950">
         <div className="flex min-h-12 flex-col justify-between gap-2 px-3 py-2 sm:flex-row sm:items-center">
           <div className="flex items-center gap-2">

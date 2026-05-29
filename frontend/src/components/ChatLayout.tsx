@@ -92,8 +92,13 @@ export function ChatLayout({
         <div className="flex min-h-[30rem] flex-1 flex-col">
           <div className="flex-1 space-y-2 overflow-y-auto bg-black p-2">
             {messages.length > 0 ? (
-              messages.map((message) => (
-                <ChatMessage key={message.id} message={message} />
+              messages.map((message, index) => (
+                <div className="grid gap-2" key={message.id}>
+                  <ChatMessage message={message} />
+                  {index < messages.length - 1 ? (
+                    <div className="h-px bg-zinc-900/80" />
+                  ) : null}
+                </div>
               ))
             ) : (
               <div className="flex min-h-52 items-center justify-center border border-dashed border-zinc-800/80 bg-zinc-950/30 p-4 text-center">

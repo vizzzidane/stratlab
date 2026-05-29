@@ -14,7 +14,7 @@ const roleStyles = {
 };
 
 const roleLabels = {
-  user: "Request",
+  user: "Request Submitted",
   model: "Experiment Result",
   error: "Error",
 };
@@ -41,6 +41,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
   const isResult = message.role === "model" && message.result;
   const isUser = message.role === "user";
   const isError = message.role === "error";
+  const runLabel = `RUN #${String(message.runNumber ?? 0).padStart(3, "0")}`;
   const diagnostics = message.result
     ? [
         { label: "total_days", value: formatNumber(message.result.stats.total_days) },
@@ -60,37 +61,63 @@ export function ChatMessage({ message }: ChatMessageProps) {
     : [];
 
   return (
-    <article className={`border ${isResult ? "p-0" : isUser ? "p-2" : "p-3"} ${roleStyles[message.role]}`}>
-      <div
-        className={`flex items-center justify-between gap-3 ${
-          isResult ? "border-b border-zinc-800/80 px-2.5 py-1.5" : "mb-1.5"
-        }`}
-      >
-        <p
-          className={`text-xs font-semibold uppercase tracking-wide ${
-            isError ? "text-red-300" : isResult ? "text-cyan-300" : "text-zinc-500"
-          }`}
-        >
-          {roleLabels[message.role]}
-        </p>
-        <time className="font-mono text-xs text-zinc-600">{message.createdAt}</time>
+    <article className={`border ${roleStyles[message.role]}`}>
+      <div className="border-b border-zinc-800/80 px-2.5 py-1.5">
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-xs font-semibold text-zinc-300">
+              {runLabel}
+            </span>
+            <span
+              className={`text-xs font-semibold uppercase tracking-wide ${
+                isError
+                  ? "text-red-300"
+                  : isResult
+                    ? "text-cyan-300"
+                    : "text-zinc-500"
+              }`}
+            >
+              {roleLabels[message.role]}
+            </span>
+          </div>
+          <time className="font-mono text-xs text-zinc-600">
+            {message.createdAt}
+          </time>
+        </div>
+
+        {message.runParams ? (
+          <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 font-mono text-xs text-zinc-500">
+            <span>
+              ticker=<span className="text-zinc-300">{message.runParams.ticker}</span>
+            </span>
+            <span>
+              short_sma=
+              <span className="text-zinc-300">{message.runParams.shortSma}</span>
+            </span>
+            <span>
+              long_sma=
+              <span className="text-zinc-300">{message.runParams.longSma}</span>
+            </span>
+            <span>
+              period=<span className="text-zinc-300">{message.runParams.period}</span>
+            </span>
+          </div>
+        ) : null}
       </div>
 
-      <div className={isResult ? "p-2.5" : ""}>
-        <p
-          className={`whitespace-pre-wrap leading-6 ${
-            isUser
-              ? "font-mono text-xs leading-5 text-zinc-500"
-              : isError
-                ? "text-sm text-red-200"
-                : "text-sm text-zinc-300"
-          }`}
-        >
-          {message.content}
-        </p>
+      <div className="p-2.5">
+        <div className="border border-zinc-900 bg-black px-2.5 py-1.5">
+          <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-600">
+            Request Summary
+          </p>
+          <p className="whitespace-pre-wrap font-mono text-xs leading-5 text-zinc-500">
+            {message.requestSummary ?? message.content}
+          </p>
+        </div>
 
         {message.result ? (
           <div className="mt-2 grid gap-2">
+            <p className="text-sm text-zinc-300">{message.content}</p>
             <MetricsCard stats={message.result.stats} />
             <div className="grid gap-px overflow-hidden border border-zinc-800/80 bg-zinc-800/80 sm:grid-cols-2 xl:grid-cols-4">
               {diagnostics.map((item) => (
@@ -108,6 +135,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
             <EquityCurveChart data={message.result.chart_data} />
             <ChartTable data={message.result.chart_data} />
           </div>
+        ) : isError ? (
+          <p className="mt-2 text-sm leading-6 text-red-200">{message.content}</p>
+        ) : isUser ? (
+          <p className="mt-2 font-mono text-xs text-zinc-600">{message.content}</p>
         ) : null}
       </div>
     </article>
